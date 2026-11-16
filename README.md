@@ -1,6 +1,8 @@
 # Research AI – Multi-Agent AI Research Workspace
 
-A full-stack, autonomous multi-agent research system featuring a **FastAPI** backend and a **Next.js** frontend with a dark, atmospheric UI inspired by Claude's chat interface and MotionSites AI Runtime.
+A full-stack, autonomous multi-agent research system featuring a **FastAPI** backend and a **Next.js** frontend designed with a high-end editorial publication aesthetic ("Forest & Bone" and "Ink & Brass" themes), real-time Server-Sent Events (SSE), and persistent SQLite storage.
+
+🌐 **Live Demo**: [https://research-with-multi-agent.onrender.com/](https://research-with-multi-agent.onrender.com/)
 
 ---
 
@@ -141,12 +143,13 @@ npm run dev
 
 ## 🎨 UI/UX Features
 
-- **Claude-Inspired Workspace**: Clean, distraction-free research interface with a collapsible sidebar and sticky bottom input.
-- **Atmospheric Visuals**: MotionSites AI Runtime-inspired subtle glow effects, radial ambient lighting, deep black backgrounds (`#070809`), and glass panels.
-- **Real-Time Agent Progress**: Live pipeline view tracking Search Agent, Reader Agent, Writer Chain, and Critic Chain.
-- **Tabbed Research Results**:
-  - **Research Report**: Polished Markdown rendering with copy-to-clipboard, export as `.md`, and word count estimation.
-  - **Sources & Research**: Clickable external URLs, domain tags, snippets, and expandable scraped text.
-  - **Critic Review**: Prominent 10-point score badge, strengths list, improvements list, and one-line verdict banner.
-- **Persistent History**: Grouped by "Today", "Previous 7 Days", and "Older" with one-click deletion and seamless switching.
+- **High-End Editorial Design**: Designed to feel like a private research library or editorial publication (Financial Times / Kinfolk style) rather than a software dashboard.
+- **Dual Themes**:
+  - **Forest & Bone (Light)**: Warm paper background (`#F3EFE6`), sidebar (`#EBE6D9`), deep forest green accents (`#1F3D2F`), and muted brass highlights (`#A67C52`).
+  - **Ink & Brass (Dark)**: Deep charcoal-black background (`#14120F`), surface (`#1C1915`), bone text (`#EDE6D8`), and antique brass accents (`#B8975A`).
+- **Quiet Vertical Timeline**: Subtle step-by-step progress tracking (*"Searching sources..."*, *"Reading documents..."*, *"Editorial review..."*) with soft blinking cursor state.
+- **Magazine-Style Article Rendering**: Reports formatted with serif typography, pull-quotes for key findings, and footnotes for source citations.
+- **Tabbed Research Materials**: Easily inspect the generated report, underlying scraped webpage excerpts, and the AI Critic's 10-point evaluation.
+- **Persistent Inquiry History**: Automatic SQLite storage of conversations with collapsible sidebar, instant switching, and one-click deletion.
+- **Mobile Responsive**: Fully responsive layout with smooth off-canvas sidebar transitions on mobile screens.
 
