@@ -13,20 +13,49 @@ export default function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [backendStatus, setBackendStatus] = useState("checking");
+  const [theme, setTheme] = useState("paper");
+
+  // Load and apply theme ("paper" or "ink")
+  useEffect(() => {
+    const saved = localStorage.getItem("research_theme") || "paper";
+    setTheme(saved);
+    if (saved === "ink") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const handleToggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next = prev === "paper" ? "ink" : "paper";
+      localStorage.setItem("research_theme", next);
+      if (next === "ink") {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+      return next;
+    });
+  }, []);
 
   // Handle window resizing for responsive sidebar
   useEffect(() => {
+    let wasMobile = window.innerWidth < 1024;
+    setIsMobile(wasMobile);
+    if (wasMobile) {
+      setIsSidebarOpen(false);
+    }
+
     const handleResize = () => {
       const mobile = window.innerWidth < 1024;
       setIsMobile(mobile);
-      if (mobile) {
+      if (mobile && !wasMobile) {
         setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
       }
+      wasMobile = mobile;
     };
 
-    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -64,42 +93,52 @@ export default function MainLayout() {
     return () => clearInterval(interval);
   }, [verifyBackend, fetchConversations]);
 
-  const handleSelectConversation = (id) => {
+  const handleToggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prev) => !prev);
+  }, []);
+
+  const handleSelectConversation = useCallback((id) => {
     setActiveConversationId(id);
-    if (isMobile) {
+    if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
     }
-  };
+  }, []);
 
-  const handleNewResearch = () => {
+  const handleNewResearch = useCallback(() => {
     setActiveConversationId(null);
-    if (isMobile) {
+    if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);
     }
-  };
+  }, []);
 
-  const handleDeleteConversation = async (id) => {
-    try {
-      await deleteConversation(id);
-      if (activeConversationId === id) {
-        setActiveConversationId(null);
+  const handleDeleteConversation = useCallback(
+    async (id) => {
+      try {
+        await deleteConversation(id);
+        setActiveConversationId((prev) => (prev === id ? null : prev));
+        await fetchConversations();
+      } catch (err) {
+        alert(`Error removing inquiry: ${err.message}`);
       }
-      await fetchConversations();
-    } catch (err) {
-      alert(`Error deleting conversation: ${err.message}`);
-    }
-  };
+    },
+    [fetchConversations]
+  );
 
-  const handleConversationCreated = (newId) => {
-    setActiveConversationId(newId);
-    fetchConversations();
-  };
+  const handleConversationCreated = useCallback(
+    (newId) => {
+      setActiveConversationId(newId);
+      fetchConversations();
+    },
+    [fetchConversations]
+  );
 
-  const activeTitle = conversations.find((c) => c.id === activeConversationId)?.title || "New Research";
+  const activeTitle =
+    conversations.find((c) => c.id === activeConversationId)?.title ||
+    "The Research Folio";
 
   return (
-    <div className="relative min-h-screen bg-[#070809] text-[#F5F5F5] flex overflow-x-hidden">
-      {/* Ambient Atmospheric Backdrop */}
+    <div className={`relative min-h-screen bg-[#F3EFE6] dark:bg-[#14120F] text-[#1B1F1C] dark:text-[#EDE6D8] flex overflow-x-hidden ${theme === "ink" ? "dark" : ""}`}>
+      {/* Ambient Atmospheric Backdrop: pure paper grain noise, 0 grid lines, 0 glow */}
       <BackgroundAtmosphere />
 
       {/* Collapsible Left Sidebar */}
@@ -111,8 +150,10 @@ export default function MainLayout() {
         onDeleteConversation={handleDeleteConversation}
         backendStatus={backendStatus}
         isOpen={isSidebarOpen}
-        onToggleOpen={() => setIsSidebarOpen(!isSidebarOpen)}
+        onToggleOpen={handleToggleSidebar}
         isMobile={isMobile}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Main Workspace Area */}
@@ -123,9 +164,11 @@ export default function MainLayout() {
       >
         <Header
           title={activeTitle}
-          onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
+          onToggleSidebar={handleToggleSidebar}
           onNewResearch={handleNewResearch}
           isSidebarOpen={isSidebarOpen}
+          theme={theme}
+          onToggleTheme={handleToggleTheme}
         />
 
         <main className="flex-1 flex flex-col">
@@ -133,10 +176,12 @@ export default function MainLayout() {
             conversationId={activeConversationId}
             onConversationCreated={handleConversationCreated}
             onRefreshConversations={fetchConversations}
+            isSidebarOpen={isSidebarOpen}
+            isMobile={isMobile}
+            theme={theme}
           />
         </main>
       </div>
     </div>
   );
 }
-

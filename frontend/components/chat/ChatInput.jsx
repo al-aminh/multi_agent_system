@@ -1,24 +1,24 @@
 "use client";
 
 import React, { useRef, useEffect } from "react";
-import { ArrowUp, Loader2, Sparkles } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 
 export default function ChatInput({
   value = "",
   onChange,
   onSubmit,
   isLoading = false,
-  placeholder = "Enter a research topic you want to investigate...",
+  placeholder = "Enter an inquiry or research proposition…",
   autoFocus = false,
 }) {
   const textareaRef = useRef(null);
 
-  // Auto-resize textarea based on content
+  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = `${Math.min(scrollHeight, 200)}px`;
+      textareaRef.current.style.height = `${Math.min(scrollHeight, 180)}px`;
     }
   }, [value]);
 
@@ -40,8 +40,8 @@ export default function ChatInput({
   const isSubmitDisabled = !value.trim() || isLoading;
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4">
-      <div className="relative rounded-2xl bg-[#111318]/90 backdrop-blur-xl border border-[rgba(255,255,255,0.09)] shadow-xl transition-all duration-200 glow-focus">
+    <div className="w-full max-w-[720px] mx-auto px-4 sm:px-0">
+      <div className="relative rounded-[8px] bg-[#FBF8F1] dark:bg-[#1C1915] border border-[#D9D2C0] dark:border-[#2C2720] shadow-[0_2px_8px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_8px_rgba(0,0,0,0.25)] transition-colors focus-within:border-[#1F3D2F] dark:focus-within:border-[#B8975A] focus-within:ring-1 focus-within:ring-[#1F3D2F]/20 dark:focus-within:ring-[#B8975A]/20">
         {/* Text Input Area */}
         <textarea
           ref={textareaRef}
@@ -51,32 +51,35 @@ export default function ChatInput({
           disabled={isLoading}
           rows={1}
           placeholder={placeholder}
-          className="w-full pt-4 pb-12 pl-4 pr-14 bg-transparent text-[#F5F5F5] placeholder-[#646775] text-sm md:text-base resize-none focus:outline-none leading-relaxed"
-          style={{ minHeight: "64px" }}
+          className="w-full pt-3.5 pb-10 pl-4 pr-12 bg-transparent text-[#1B1F1C] dark:text-[#EDE6D8] placeholder-[#7A7566] dark:placeholder-[#8F8778] text-sm md:text-[15px] resize-none focus:outline-none leading-relaxed font-sans"
+          style={{ minHeight: "54px" }}
         />
 
-        {/* Bottom Bar: Hints & Submit Button */}
-        <div className="absolute left-4 right-3 bottom-3 flex items-center justify-between pointer-events-none">
-          <div className="flex items-center gap-1.5 text-[11px] text-[#646775]">
-            <Sparkles className="w-3 h-3 text-violet-400" />
-            <span className="hidden sm:inline">Enter to research • Shift + Enter for new line</span>
-            <span className="sm:hidden">Multi-agent research</span>
+        {/* Bottom Bar: Quiet editorial hint & small circular send button */}
+        <div className="absolute left-4 right-2.5 bottom-2.5 flex items-center justify-between pointer-events-none">
+          <div className="flex items-center gap-1.5 text-[11px] text-[#7A7566] dark:text-[#8F8778] font-serif italic">
+            <span className="hidden sm:inline">
+              Return to dispatch inquiry · Shift + Return for new line
+            </span>
+            <span className="sm:hidden">The Research Folio</span>
           </div>
 
           <button
             type="button"
             onClick={onSubmit}
             disabled={isSubmitDisabled}
-            className={`pointer-events-auto w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-200 ${
+            className={`pointer-events-auto w-7 h-7 rounded-full flex items-center justify-center transition-all ${
               isSubmitDisabled
-                ? "bg-white/5 text-[#555866] cursor-not-allowed"
-                : "bg-gradient-to-tr from-violet-600 to-indigo-500 hover:from-violet-500 hover:to-indigo-400 text-white shadow-md shadow-violet-900/40 glow-btn scale-100 active:scale-95"
+                ? "bg-[#D9D2C0]/50 dark:bg-[#2C2720] text-[#7A7566] dark:text-[#8F8778] cursor-not-allowed opacity-50"
+                : "bg-[#1F3D2F] dark:bg-[#B8975A] hover:opacity-90 text-[#F3EFE6] dark:text-[#14120F] active:scale-95"
             }`}
+            title="Dispatch inquiry"
+            aria-label="Dispatch inquiry"
           >
             {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin text-white" />
+              <span className="blinking-cursor !w-1 !h-3.5 !ml-0 bg-current" />
             ) : (
-              <ArrowUp className="w-4 h-4 stroke-[2.5]" />
+              <ArrowUp className="w-3.5 h-3.5" strokeWidth={1.5} />
             )}
           </button>
         </div>
@@ -84,4 +87,3 @@ export default function ChatInput({
     </div>
   );
 }
-

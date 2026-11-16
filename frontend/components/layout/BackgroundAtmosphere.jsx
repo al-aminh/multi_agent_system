@@ -4,38 +4,17 @@ import React from "react";
 
 export default function BackgroundAtmosphere() {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {/* Deep atmospheric backdrop */}
-      <div className="absolute inset-0 bg-[#070809]" />
+    <div className="fixed inset-0 pointer-events-none z-0">
+      {/* Warm paper background base */}
+      <div className="absolute inset-0 bg-[#F3EFE6] dark:bg-[#14120F] transition-colors duration-200" />
 
-      {/* Soft atmospheric radial glows */}
-      <div 
-        className="absolute -top-40 -left-40 w-[650px] h-[650px] rounded-full opacity-20 blur-[130px]"
+      {/* 3% faint paper-grain noise (pure SVG feTurbulence, no external assets, no grid lines, no glow) */}
+      <div
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.035] pointer-events-none"
         style={{
-          background: "radial-gradient(circle, #6366F1 0%, #8B5CF6 45%, transparent 70%)",
-        }}
-      />
-      <div 
-        className="absolute top-1/3 -right-40 w-[600px] h-[600px] rounded-full opacity-15 blur-[140px]"
-        style={{
-          background: "radial-gradient(circle, #3B82F6 0%, #8B5CF6 50%, transparent 70%)",
-        }}
-      />
-      <div 
-        className="absolute -bottom-40 left-1/4 w-[700px] h-[700px] rounded-full opacity-15 blur-[150px]"
-        style={{
-          background: "radial-gradient(circle, #8B5CF6 0%, #1E1B4B 60%, transparent 80%)",
-        }}
-      />
-
-      {/* Subtle vignette layer */}
-      <div 
-        className="absolute inset-0"
-        style={{
-          backgroundImage: "radial-gradient(circle at center, transparent 0%, rgba(7, 8, 9, 0.6) 100%)",
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperNoise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperNoise)'/%3E%3C/svg%3E")`,
         }}
       />
     </div>
   );
 }
-

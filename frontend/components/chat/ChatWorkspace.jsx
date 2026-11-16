@@ -11,6 +11,9 @@ export default function ChatWorkspace({
   conversationId = null,
   onConversationCreated,
   onRefreshConversations,
+  isSidebarOpen = true,
+  isMobile = false,
+  theme = "paper",
 }) {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -23,6 +26,14 @@ export default function ChatWorkspace({
   const [streamingError, setStreamingError] = useState(null);
   const [streamingResult, setStreamingResult] = useState(null);
 
+  const activeStreamingConvIdRef = useRef(null);
+  const currentConvIdRef = useRef(conversationId);
+  const isLoadingRef = useRef(false);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
+
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -31,9 +42,21 @@ export default function ChatWorkspace({
 
   // Load conversation details when conversationId changes
   useEffect(() => {
+    // If this conversation is currently being researched, do NOT interrupt or wipe state
+    if (activeStreamingConvIdRef.current && conversationId === activeStreamingConvIdRef.current) {
+      currentConvIdRef.current = conversationId;
+      return;
+    }
+
+    if (isLoadingRef.current && conversationId === currentConvIdRef.current) {
+      return;
+    }
+
+    currentConvIdRef.current = conversationId;
+
     if (!conversationId) {
       setMessages([]);
-      setConversationTitle("New Research");
+      setConversationTitle("New Inquiry");
       setStreamingStage(null);
       setStagesState({});
       setStreamingError(null);
@@ -47,7 +70,7 @@ export default function ChatWorkspace({
         const data = await getConversation(conversationId);
         if (isMounted && data) {
           setMessages(data.messages || []);
-          setConversationTitle(data.title || "Research Conversation");
+          setConversationTitle(data.title || "The Research Folio");
         }
       } catch (err) {
         console.error("Failed to load conversation:", err);
@@ -76,7 +99,7 @@ export default function ChatWorkspace({
     setStagesState({});
     setStreamingResult(null);
 
-    // Optimistically add user message
+    // Optimistically add user inquiry docket
     const tempUserMsg = {
       id: `temp-user-${Date.now()}`,
       role: "user",
@@ -94,6 +117,8 @@ export default function ChatWorkspace({
         // Handle init event which returns the created conversation ID
         if (event.stage === "init" && event.data?.conversation_id) {
           targetConversationId = event.data.conversation_id;
+          activeStreamingConvIdRef.current = targetConversationId;
+          currentConvIdRef.current = targetConversationId;
           if (onConversationCreated) {
             onConversationCreated(targetConversationId);
           }
@@ -123,6 +148,7 @@ export default function ChatWorkspace({
       onError: (err) => {
         setStreamingError(err);
         setIsLoading(false);
+        activeStreamingConvIdRef.current = null;
       },
       onComplete: (data) => {
         const finalResult = data?.result || {};
@@ -142,6 +168,7 @@ export default function ChatWorkspace({
         setStreamingStage(null);
         setStagesState({});
         setStreamingResult(null);
+        activeStreamingConvIdRef.current = null;
 
         if (onRefreshConversations) {
           onRefreshConversations();
@@ -155,11 +182,11 @@ export default function ChatWorkspace({
   return (
     <div className="flex-1 flex flex-col h-full min-h-screen relative z-10">
       {/* Scrollable Conversation Workspace */}
-      <div className="flex-1 overflow-y-auto pb-44 pt-4">
+      <div className="flex-1 overflow-y-auto pb-40 pt-6">
         {!hasMessages ? (
           <WelcomeScreen onSelectTopic={(t) => handleSubmit(t)} />
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {messages.map((msg) => {
               if (msg.role === "user") {
                 return (
@@ -190,13 +217,17 @@ export default function ChatWorkspace({
               />
             )}
 
-            <div ref={messagesEndRef} className="h-4" />
+            <div ref={messagesEndRef} className="h-6" />
           </div>
         )}
       </div>
 
-      {/* Sticky Bottom Input Area */}
-      <div className="fixed bottom-0 left-0 right-0 z-20 pb-5 pt-3 bg-gradient-to-t from-[#070809] via-[#070809]/95 to-transparent pointer-events-none">
+      {/* Floating Bottom Input Area (No background bar or dividing line) */}
+      <div
+        className={`fixed bottom-0 right-0 z-20 pb-5 sm:pb-6 pointer-events-none transition-all duration-300 ease-in-out ${
+          isSidebarOpen && !isMobile ? "left-0 lg:left-[270px]" : "left-0"
+        }`}
+      >
         <div className="pointer-events-auto">
           <ChatInput
             value={inputValue}
@@ -210,4 +241,3 @@ export default function ChatWorkspace({
     </div>
   );
 }
-

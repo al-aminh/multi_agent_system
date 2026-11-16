@@ -3,8 +3,7 @@
 import React, { useState } from "react";
 import {
   ExternalLink,
-  Globe,
-  FileCode,
+  FileText,
   ChevronDown,
   ChevronUp,
   Search,
@@ -23,23 +22,23 @@ export default function SourcesPanel({
   const sources = parseSources(searchResults, scrapedContent);
 
   return (
-    <div className="p-4 md:p-6 bg-[#0F1117] rounded-xl space-y-6">
+    <div className="p-4 sm:p-6 bg-[#FBF9F4] rounded-[12px] space-y-6">
       {/* Section 1: Discovered Sources */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4 text-blue-400" />
-            <h3 className="text-sm font-semibold text-white">
-              Identified Sources & References ({sources.length})
+            <BookOpen className="w-4 h-4 text-[#1F3D2F]" strokeWidth={1.5} />
+            <h3 className="font-serif text-sm font-semibold text-[#1F3D2F]">
+              Primary Source Materials ({sources.length})
             </h3>
           </div>
-          <span className="text-[11px] font-mono text-[#646775]">
-            Verified URLs
+          <span className="text-[10px] font-mono text-[#858B86]">
+            Verified Documents
           </span>
         </div>
 
         {sources.length === 0 ? (
-          <div className="p-4 rounded-lg bg-[#12141A] border border-[rgba(255,255,255,0.06)] text-xs text-[#8A8D9B]">
+          <div className="p-4 rounded-[10px] bg-[#F4F1EA] border border-[#E2DDD1] text-xs text-[#5E6460]">
             No discrete URLs extracted from search results.
           </div>
         ) : (
@@ -50,26 +49,26 @@ export default function SourcesPanel({
                 href={src.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col p-3 rounded-lg bg-[#12141A] hover:bg-[#161822] border border-[rgba(255,255,255,0.06)] hover:border-blue-500/30 transition-all duration-150"
+                className="group flex flex-col p-3 rounded-[10px] bg-[#F4F1EA] hover:bg-[#EFEBE0] border border-[#E2DDD1] hover:border-[#CFC8B8] transition-all"
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded-[4px] bg-[#E9E4D8] text-[#1F3D2F] border border-[#DDD6C5]">
                       0{i + 1}
                     </span>
-                    <span className="text-xs font-medium text-[#E2E4E9] group-hover:text-blue-300 truncate">
+                    <span className="font-serif text-xs sm:text-[13px] font-medium text-[#1B1F1C] group-hover:text-[#1F3D2F] truncate">
                       {src.title}
                     </span>
                   </div>
-                  <ExternalLink className="w-3.5 h-3.5 text-[#646775] group-hover:text-blue-400 flex-shrink-0" />
+                  <ExternalLink className="w-3.5 h-3.5 text-[#858B86] group-hover:text-[#1F3D2F] flex-shrink-0" strokeWidth={1.5} />
                 </div>
 
-                <div className="text-[11px] text-[#646775] font-mono truncate mt-1">
+                <div className="text-[11px] text-[#858B86] font-mono truncate mt-1">
                   {src.url}
                 </div>
 
                 {src.snippet && (
-                  <p className="text-xs text-[#8E909B] mt-1.5 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-[#5E6460] mt-1.5 line-clamp-2 leading-relaxed">
                     {src.snippet}
                   </p>
                 )}
@@ -80,37 +79,37 @@ export default function SourcesPanel({
       </div>
 
       {/* Section 2: Reader Agent Scraped Content */}
-      <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
+      <div className="pt-4 border-t border-[#E2DDD1]">
         <div
           onClick={() => setShowFullScraped(!showFullScraped)}
           className="flex items-center justify-between cursor-pointer py-1 group"
         >
           <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-cyan-400" />
-            <h3 className="text-sm font-semibold text-white group-hover:text-cyan-300 transition-colors">
-              Scraped Webpage Content (Reader Agent)
+            <FileText className="w-4 h-4 text-[#A67C52]" strokeWidth={1.5} />
+            <h3 className="font-serif text-sm font-semibold text-[#1F3D2F] group-hover:text-[#A67C52] transition-colors">
+              Extracted Webpage Content (Reader Agent)
             </h3>
-            <span className="text-[11px] text-[#646775]">
+            <span className="text-[10px] font-mono text-[#858B86]">
               ({scrapedContent.length} chars)
             </span>
           </div>
 
           <button
             type="button"
-            className="text-xs text-[#646775] group-hover:text-[#9A9CA5] flex items-center gap-1"
+            className="text-xs text-[#5E6460] group-hover:text-[#1B1F1C] flex items-center gap-1"
           >
-            <span>{showFullScraped ? "Collapse" : "Inspect Raw Scrape"}</span>
+            <span>{showFullScraped ? "Collapse" : "Inspect Raw Text"}</span>
             {showFullScraped ? (
-              <ChevronUp className="w-4 h-4" />
+              <ChevronUp className="w-3.5 h-3.5" strokeWidth={1.5} />
             ) : (
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-3.5 h-3.5" strokeWidth={1.5} />
             )}
           </button>
         </div>
 
         {showFullScraped && (
-          <div className="mt-3 p-4 rounded-lg bg-[#0C0D10] border border-[rgba(255,255,255,0.06)] max-h-96 overflow-y-auto">
-            <pre className="text-xs font-mono text-[#A1A4B0] whitespace-pre-wrap leading-relaxed">
+          <div className="mt-3 p-3.5 rounded-[10px] bg-[#EFEBE0] border border-[#E2DDD1] max-h-96 overflow-y-auto">
+            <pre className="text-xs font-mono text-[#1B1F1C] whitespace-pre-wrap leading-relaxed">
               {scrapedContent || "No content was scraped."}
             </pre>
           </div>
@@ -118,34 +117,34 @@ export default function SourcesPanel({
       </div>
 
       {/* Section 3: Raw Search Output */}
-      <div className="pt-4 border-t border-[rgba(255,255,255,0.06)]">
+      <div className="pt-4 border-t border-[#E2DDD1]">
         <div
           onClick={() => setShowFullSearch(!showFullSearch)}
           className="flex items-center justify-between cursor-pointer py-1 group"
         >
           <div className="flex items-center gap-2">
-            <Search className="w-4 h-4 text-violet-400" />
-            <h3 className="text-sm font-semibold text-white group-hover:text-violet-300 transition-colors">
-              Raw Search Output (Tavily)
+            <Search className="w-4 h-4 text-[#5E6460]" strokeWidth={1.5} />
+            <h3 className="font-serif text-sm font-semibold text-[#1F3D2F] group-hover:text-[#5E6460] transition-colors">
+              Raw Search Output (Tavily Engine)
             </h3>
           </div>
 
           <button
             type="button"
-            className="text-xs text-[#646775] group-hover:text-[#9A9CA5] flex items-center gap-1"
+            className="text-xs text-[#5E6460] group-hover:text-[#1B1F1C] flex items-center gap-1"
           >
-            <span>{showFullSearch ? "Collapse" : "Inspect Raw Search"}</span>
+            <span>{showFullSearch ? "Collapse" : "Inspect Search Log"}</span>
             {showFullSearch ? (
-              <ChevronUp className="w-4 h-4" />
+              <ChevronUp className="w-3.5 h-3.5" strokeWidth={1.5} />
             ) : (
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown className="w-3.5 h-3.5" strokeWidth={1.5} />
             )}
           </button>
         </div>
 
         {showFullSearch && (
-          <div className="mt-3 p-4 rounded-lg bg-[#0C0D10] border border-[rgba(255,255,255,0.06)] max-h-80 overflow-y-auto">
-            <pre className="text-xs font-mono text-[#A1A4B0] whitespace-pre-wrap leading-relaxed">
+          <div className="mt-3 p-3.5 rounded-[10px] bg-[#EFEBE0] border border-[#E2DDD1] max-h-80 overflow-y-auto">
+            <pre className="text-xs font-mono text-[#1B1F1C] whitespace-pre-wrap leading-relaxed">
               {searchResults || "No search results available."}
             </pre>
           </div>
@@ -154,4 +153,3 @@ export default function SourcesPanel({
     </div>
   );
 }
-

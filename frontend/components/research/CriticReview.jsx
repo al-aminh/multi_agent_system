@@ -2,13 +2,11 @@
 
 import React, { useState } from "react";
 import {
-  ShieldCheck,
-  CheckCircle2,
-  AlertTriangle,
-  Quote,
+  Check,
   ChevronDown,
   ChevronUp,
-  Award,
+  Scale,
+  ArrowRight,
 } from "lucide-react";
 import { parseCriticReview } from "@/lib/utils";
 
@@ -16,77 +14,61 @@ export default function CriticReview({ feedback = "" }) {
   const [showRaw, setShowRaw] = useState(false);
   const parsed = parseCriticReview(feedback);
 
-  // Score styling logic
   const score = parsed.score;
-  const scoreColor =
-    score !== null
-      ? score >= 8
-        ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
-        : score >= 6
-        ? "text-amber-400 border-amber-500/30 bg-amber-500/10"
-        : "text-red-400 border-red-500/30 bg-red-500/10"
-      : "text-violet-400 border-violet-500/30 bg-violet-500/10";
 
   return (
-    <div className="p-5 md:p-7 bg-[#0F1117] rounded-xl space-y-6">
-      {/* Top Banner: Score & Verdict */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 p-5 rounded-xl bg-[#13151D] border border-[rgba(255,255,255,0.07)]">
+    <div className="p-4 sm:p-6 bg-[#FBF9F4] rounded-[12px] space-y-5">
+      {/* Top Banner: Score & Editorial Assessment */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-[10px] bg-[#F4F1EA] border border-[#E2DDD1]">
         <div className="flex items-center gap-4">
-          <div
-            className={`w-20 h-20 rounded-2xl flex flex-col items-center justify-center border shadow-lg flex-shrink-0 ${scoreColor}`}
-          >
-            <span className="text-2xl font-bold font-mono tracking-tight">
+          <div className="w-16 h-16 rounded-[10px] bg-[#1F3D2F] text-[#F4F1EA] flex flex-col items-center justify-center flex-shrink-0 soft-button-shadow">
+            <span className="font-serif text-2xl font-semibold tracking-tight">
               {score !== null ? score : "--"}
             </span>
-            <span className="text-[10px] uppercase font-mono tracking-wider opacity-70">
-              Out of 10
+            <span className="text-[9px] font-mono uppercase tracking-wider text-[#E9E4D8]/80">
+              out of 10
             </span>
           </div>
 
           <div>
-            <div className="flex items-center gap-1.5 text-xs text-violet-400 font-mono font-semibold uppercase mb-1">
-              <Award className="w-3.5 h-3.5" />
-              <span>AI Critic Evaluation</span>
+            <div className="flex items-center gap-1.5 text-xs text-[#A67C52] font-mono font-medium uppercase mb-0.5">
+              <Scale className="w-3.5 h-3.5" strokeWidth={1.5} />
+              <span>Editorial Assessment</span>
             </div>
-            <h3 className="text-base font-semibold text-white">
+            <h3 className="font-serif text-base font-semibold text-[#1F3D2F]">
               {score >= 8
-                ? "High Quality Research Report"
+                ? "Thorough, Well-Structured Research"
                 : score >= 6
-                ? "Satisfactory Quality with Improvements"
-                : "Needs Further Fact-Checking & Revisions"}
+                ? "Satisfactory Quality with Noted Revisions"
+                : "Preliminary Draft Requiring Further Evidence"}
             </h3>
-            <p className="text-xs text-[#8E909B] mt-0.5">
-              Evaluated strictly for depth, clarity, factuality, and structure.
+            <p className="text-xs text-[#5E6460] mt-0.5">
+              Evaluated strictly for depth, logical structure, source authority, and neutrality.
             </p>
           </div>
         </div>
       </div>
 
-      {/* One-Line Verdict Banner */}
+      {/* One-Line Verdict Quote */}
       {parsed.verdict && (
-        <div className="p-4 rounded-xl bg-violet-950/20 border border-violet-500/25 relative overflow-hidden">
-          <div className="flex items-start gap-3">
-            <Quote className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <div className="text-[11px] font-mono text-violet-300 uppercase font-semibold mb-1">
-                One-Line Verdict
-              </div>
-              <p className="text-sm font-medium text-[#F3F4F6] italic leading-relaxed">
-                "{parsed.verdict}"
-              </p>
-            </div>
+        <div className="p-4 rounded-[10px] bg-[#EFEBE0] border border-[#DDD7C9]">
+          <div className="text-[10px] font-mono uppercase tracking-wider text-[#A67C52] font-medium mb-1">
+            Editorial Verdict
           </div>
+          <p className="font-serif italic text-sm sm:text-[15px] text-[#1B1F1C] leading-relaxed">
+            "{parsed.verdict}"
+          </p>
         </div>
       )}
 
-      {/* Grid: Strengths vs Areas to Improve */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Strengths & Areas to Improve Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {/* Strengths */}
-        <div className="p-4 rounded-xl bg-[#12141A] border border-[rgba(255,255,255,0.06)]">
-          <div className="flex items-center gap-2 mb-3">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <h4 className="text-xs font-semibold text-[#E2E4E9] uppercase tracking-wider font-mono">
-              Strengths
+        <div className="p-4 rounded-[10px] bg-[#F4F1EA] border border-[#E2DDD1]">
+          <div className="flex items-center gap-2 mb-2.5">
+            <Check className="w-4 h-4 text-[#1F3D2F]" strokeWidth={2} />
+            <h4 className="font-serif text-xs font-semibold text-[#1F3D2F] uppercase tracking-wide">
+              Key Strengths
             </h4>
           </div>
 
@@ -95,23 +77,23 @@ export default function CriticReview({ feedback = "" }) {
               {parsed.strengths.map((item, idx) => (
                 <li
                   key={idx}
-                  className="flex items-start gap-2.5 text-xs text-[#C7C9D3] leading-relaxed"
+                  className="flex items-start gap-2 text-xs text-[#353B37] leading-relaxed"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#1F3D2F] mt-1.5 flex-shrink-0" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-xs text-[#646775]">No specific strengths identified.</p>
+            <p className="text-xs text-[#858B86]">No specific strengths documented.</p>
           )}
         </div>
 
         {/* Areas to Improve */}
-        <div className="p-4 rounded-xl bg-[#12141A] border border-[rgba(255,255,255,0.06)]">
-          <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle className="w-4 h-4 text-amber-400" />
-            <h4 className="text-xs font-semibold text-[#E2E4E9] uppercase tracking-wider font-mono">
+        <div className="p-4 rounded-[10px] bg-[#F4F1EA] border border-[#E2DDD1]">
+          <div className="flex items-center gap-2 mb-2.5">
+            <ArrowRight className="w-3.5 h-3.5 text-[#A67C52]" strokeWidth={1.5} />
+            <h4 className="font-serif text-xs font-semibold text-[#A67C52] uppercase tracking-wide">
               Areas to Improve
             </h4>
           </div>
@@ -121,37 +103,41 @@ export default function CriticReview({ feedback = "" }) {
               {parsed.improvements.map((item, idx) => (
                 <li
                   key={idx}
-                  className="flex items-start gap-2.5 text-xs text-[#C7C9D3] leading-relaxed"
+                  className="flex items-start gap-2 text-xs text-[#353B37] leading-relaxed"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#A67C52] mt-1.5 flex-shrink-0" />
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-xs text-[#646775]">No specific weaknesses identified.</p>
+            <p className="text-xs text-[#858B86]">No specific revisions required.</p>
           )}
         </div>
       </div>
 
-      {/* Expandable Raw Critic Output */}
-      <div className="pt-3 border-t border-[rgba(255,255,255,0.06)]">
+      {/* Expandable Raw Critic Text */}
+      <div className="pt-2 border-t border-[#E2DDD1]">
         <div
           onClick={() => setShowRaw(!showRaw)}
           className="flex items-center justify-between cursor-pointer py-1 group"
         >
-          <span className="text-xs text-[#646775] group-hover:text-[#9A9CA5] font-mono">
-            {showRaw ? "Hide original critic review" : "View original critic review"}
+          <span className="text-xs font-mono text-[#858B86] group-hover:text-[#1B1F1C]">
+            {showRaw ? "Hide unedited critic log" : "View unedited critic log"}
           </span>
-          <button type="button" className="text-[#646775] group-hover:text-[#9A9CA5]">
-            {showRaw ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          <button type="button" className="text-[#858B86] group-hover:text-[#1B1F1C]">
+            {showRaw ? (
+              <ChevronUp className="w-3.5 h-3.5" strokeWidth={1.5} />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5" strokeWidth={1.5} />
+            )}
           </button>
         </div>
 
         {showRaw && (
-          <div className="mt-3 p-4 rounded-lg bg-[#0C0D10] border border-[rgba(255,255,255,0.06)]">
-            <pre className="text-xs font-mono text-[#A1A4B0] whitespace-pre-wrap leading-relaxed">
-              {feedback || "No feedback recorded."}
+          <div className="mt-2.5 p-3.5 rounded-[10px] bg-[#EFEBE0] border border-[#E2DDD1]">
+            <pre className="text-xs font-mono text-[#1B1F1C] whitespace-pre-wrap leading-relaxed">
+              {feedback || "No feedback text available."}
             </pre>
           </div>
         )}
@@ -159,4 +145,3 @@ export default function CriticReview({ feedback = "" }) {
     </div>
   );
 }
-

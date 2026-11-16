@@ -1,40 +1,51 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark, .dark *));
+
 @layer base {
   :root {
-    --bg-main: #070809;
-    --bg-sidebar: #0C0D10;
-    --surface-main: #111318;
-    --surface-secondary: #17191F;
-    --surface-hover: #1e212a;
-    --border-subtle: rgba(255, 255, 255, 0.08);
-    --border-hover: rgba(255, 255, 255, 0.16);
-    --text-primary: #F5F5F5;
-    --text-secondary: #9A9CA5;
-    --text-muted: #646775;
-    --accent-violet: #8B5CF6;
-    --accent-blue: #3B82F6;
-    --accent-indigo: #6366F1;
+    --bg-page: #F3EFE6;
+    --bg-sidebar: #EBE6D9;
+    --bg-surface: #FBF8F1;
+    --border-hairline: #D9D2C0;
+    --accent-forest: #1F3D2F;
+    --accent-brass: #A67C52;
+    --text-ink: #1B1F1C;
+    --text-muted: #7A7566;
+  }
+
+  .dark {
+    --bg-page: #14120F;
+    --bg-sidebar: #1C1915;
+    --bg-surface: #1C1915;
+    --border-hairline: #2C2720;
+    --accent-forest: #3A634E;
+    --accent-brass: #B8975A;
+    --text-ink: #EDE6D8;
+    --text-muted: #8F8778;
   }
 
   * {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-hairline);
     box-sizing: border-box;
   }
 
   html,
   body {
-    background-color: #070809;
-    color: #F5F5F5;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", sans-serif;
+    background-color: var(--bg-page);
+    color: var(--text-ink);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background-color 200ms ease, color 200ms ease;
   }
 
-  /* Custom subtle dark scrollbars */
+  /* Refined, quiet editorial scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   ::-webkit-scrollbar-track {
@@ -42,221 +53,156 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.12);
-    border-radius: 9999px;
+    background: #D9D2C0;
+    border-radius: 4px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: #2C2720;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.22);
+    background: #C2BBB0;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: #3A342B;
   }
 }
 
-/* Atmospheric Ambient Lighting & Glows */
-.ambient-bg {
-  background-color: #070809;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.09) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 60%);
+/* Serif font utility for headings, articles, and literary editorial marks */
+.font-serif {
+  font-family: "Newsreader", "Fraunces", Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
-.aurora-glow {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  border-radius: 50%;
-  filter: blur(120px);
-  pointer-events: none;
-  opacity: 0.25;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, rgba(59, 130, 246, 0.15) 50%, transparent 70%);
-  animation: floatAmbient 18s ease-in-out infinite alternate;
+.font-sans {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-@keyframes floatAmbient {
-  0% {
-    transform: translate(-10%, -10%) scale(0.9);
+.font-mono {
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Slow, quiet blinking cursor for the thinking state */
+@keyframes slowBlink {
+  0%, 49% {
+    opacity: 1;
   }
-  50% {
-    transform: translate(15%, 5%) scale(1.1);
-  }
-  100% {
-    transform: translate(-5%, 15%) scale(0.95);
+  50%, 100% {
+    opacity: 0;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .aurora-glow {
-    animation: none;
-  }
+.blinking-cursor {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.15em;
+  background-color: currentColor;
+  margin-left: 3px;
+  vertical-align: -0.15em;
+  animation: slowBlink 1.2s infinite;
 }
 
-/* Glass & Glow effects */
-.glass-panel {
-  background: rgba(17, 19, 24, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+/* Quiet 200ms fades */
+.editorial-fade {
+  transition: opacity 200ms ease, transform 200ms ease;
 }
 
-.glass-card {
-  background: rgba(23, 25, 31, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+/* Magazine-style Article Typography */
+.article-prose {
+  font-family: "Newsreader", "Fraunces", Georgia, serif;
+  font-size: 1.0625rem; /* 17px */
+  line-height: 1.78;
+  color: #1B1F1C;
 }
 
-.glow-focus:focus-within {
-  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.5), 0 0 25px -5px rgba(139, 92, 246, 0.2);
+.dark .article-prose {
+  color: #EDE6D8;
 }
 
-.glow-btn {
-  box-shadow: 0 0 20px -3px rgba(139, 92, 246, 0.35);
+.article-prose p {
+  margin-bottom: 1.35rem;
 }
 
-.glow-btn:hover {
-  box-shadow: 0 0 25px 0px rgba(139, 92, 246, 0.5);
+.article-prose h1 {
+  font-family: "Newsreader", "Fraunces", Georgia, serif;
+  font-weight: 400;
+  font-size: 1.85rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: #1F3D2F;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
-/* Markdown Typography Styles */
-.markdown-body {
-  color: #E2E4E9;
-  font-size: 0.975rem;
-  line-height: 1.75;
+.dark .article-prose h1 {
+  color: #EDE6D8;
 }
 
-.markdown-body h1 {
-  font-size: 1.65rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.markdown-body h2 {
+.article-prose h2 {
+  font-family: "Newsreader", "Fraunces", Georgia, serif;
+  font-weight: 500;
   font-size: 1.35rem;
-  font-weight: 600;
-  color: #F3F4F6;
-  margin-top: 1.4rem;
-  margin-bottom: 0.6rem;
-  padding-bottom: 0.3rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+  color: #1F3D2F;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #D9D2C0;
 }
 
-.markdown-body h3 {
+.dark .article-prose h2 {
+  color: #EDE6D8;
+  border-bottom-color: #2C2720;
+}
+
+.article-prose h3 {
+  font-family: "Newsreader", "Fraunces", Georgia, serif;
+  font-weight: 500;
   font-size: 1.15rem;
-  font-weight: 600;
-  color: #E5E7EB;
-  margin-top: 1.1rem;
+  line-height: 1.4;
+  color: #1F3D2F;
+  margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
-.markdown-body p {
-  margin-bottom: 1.1rem;
-  color: #D1D5DB;
+.dark .article-prose h3 {
+  color: #EDE6D8;
 }
 
-.markdown-body ul {
-  list-style-type: disc;
-  padding-left: 1.5rem;
-  margin-bottom: 1.1rem;
-}
-
-.markdown-body ol {
-  list-style-type: decimal;
-  padding-left: 1.5rem;
-  margin-bottom: 1.1rem;
-}
-
-.markdown-body li {
-  margin-bottom: 0.4rem;
-  color: #D1D5DB;
-}
-
-.markdown-body li::marker {
-  color: #8B5CF6;
-}
-
-.markdown-body blockquote {
-  border-left: 3px solid #8B5CF6;
-  padding-left: 1rem;
-  margin: 1.2rem 0;
-  color: #9CA3AF;
+/* Pull quote styling for key findings */
+.pull-quote {
+  font-family: "Newsreader", "Fraunces", Georgia, serif;
   font-style: italic;
-  background: rgba(139, 92, 246, 0.05);
-  border-radius: 0 6px 6px 0;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  font-size: 1.15rem;
+  line-height: 1.65;
+  border-left: 2px solid #A67C52;
+  padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 1.75rem 0;
+  color: #1B1F1C;
 }
 
-.markdown-body code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.875rem;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  color: #C4B5FD;
+.dark .pull-quote {
+  border-left-color: #B8975A;
+  color: #EDE6D8;
 }
 
-.markdown-body pre {
-  background: #0E1015;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  padding: 1rem;
-  overflow-x: auto;
-  margin: 1.2rem 0;
+/* Numbered Footnote Superscript */
+.footnote-ref {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  vertical-align: super;
+  color: #A67C52;
+  padding: 0 1px;
+  font-weight: 500;
+  text-decoration: none;
 }
 
-.markdown-body pre code {
-  background: transparent;
-  padding: 0;
-  color: #E2E8F0;
-  font-size: 0.875rem;
+.dark .footnote-ref {
+  color: #B8975A;
 }
 
-.markdown-body table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.2rem 0;
-  font-size: 0.9rem;
-}
-
-.markdown-body th,
-.markdown-body td {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.65rem 0.9rem;
-  text-align: left;
-}
-
-.markdown-body th {
-  background: rgba(255, 255, 255, 0.04);
-  color: #F3F4F6;
-  font-weight: 600;
-}
-
-.markdown-body tr:nth-child(even) {
-  background: rgba(255, 255, 255, 0.015);
-}
-
-.markdown-body a {
-  color: #60A5FA;
+.footnote-ref:hover {
   text-decoration: underline;
-  text-underline-offset: 3px;
-  transition: color 0.15s ease;
-}
-
-.markdown-body a:hover {
-  color: #93C5FD;
-}
-
-.markdown-body strong {
-  font-weight: 600;
-  color: #FFFFFF;
-}
-
-.markdown-body hr {
-  border: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 2rem 0;
 }

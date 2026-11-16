@@ -38,7 +38,7 @@ export default function ResearchReport({ report = "" }) {
 
   if (!report) {
     return (
-      <div className="p-8 text-center text-[#646775]">
+      <div className="p-8 text-center text-[#858B86] font-serif text-sm">
         No report generated yet.
       </div>
     );
@@ -47,14 +47,14 @@ export default function ResearchReport({ report = "" }) {
   return (
     <div className="w-full">
       {/* Action and meta toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-[#13151D] border-b border-[rgba(255,255,255,0.06)] rounded-t-xl">
-        <div className="flex items-center gap-4 text-xs text-[#8E909B]">
-          <div className="flex items-center gap-1.5">
-            <FileText className="w-3.5 h-3.5 text-violet-400" />
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-[#F4F1EA] border-b border-[#E2DDD1] rounded-t-[12px]">
+        <div className="flex items-center gap-4 text-xs text-[#5E6460]">
+          <div className="flex items-center gap-1.5 font-mono">
+            <FileText className="w-3.5 h-3.5 text-[#1F3D2F]" strokeWidth={1.5} />
             <span>{wordCount} words</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-indigo-400" />
+          <div className="flex items-center gap-1.5 font-mono">
+            <Clock className="w-3.5 h-3.5 text-[#A67C52]" strokeWidth={1.5} />
             <span>~{readTimeMinutes} min read</span>
           </div>
         </div>
@@ -63,17 +63,17 @@ export default function ResearchReport({ report = "" }) {
           <button
             type="button"
             onClick={handleCopy}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-[#D1D5DB] hover:text-white transition-colors border border-white/5"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-[#FBF9F4] hover:bg-[#EFEBE0] text-xs font-medium text-[#1B1F1C] transition-colors border border-[#E2DDD1]"
           >
             {copied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied!</span>
+                <Check className="w-3.5 h-3.5 text-[#1F3D2F]" strokeWidth={2} />
+                <span className="text-[#1F3D2F] font-mono text-[11px]">Copied</span>
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5" />
-                <span>Copy Report</span>
+                <Copy className="w-3.5 h-3.5 text-[#5E6460]" strokeWidth={1.5} />
+                <span>Copy</span>
               </>
             )}
           </button>
@@ -81,16 +81,16 @@ export default function ResearchReport({ report = "" }) {
           <button
             type="button"
             onClick={handleDownload}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-[#D1D5DB] hover:text-white transition-colors border border-white/5"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] bg-[#FBF9F4] hover:bg-[#EFEBE0] text-xs font-medium text-[#1B1F1C] transition-colors border border-[#E2DDD1]"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3.5 h-3.5 text-[#5E6460]" strokeWidth={1.5} />
             <span>Download .md</span>
           </button>
         </div>
       </div>
 
       {/* Markdown Content Area */}
-      <div className="p-6 md:p-8 bg-[#0F1117] rounded-b-xl overflow-x-auto">
+      <div className="p-5 sm:p-8 bg-[#FBF9F4] rounded-b-[12px] overflow-x-auto">
         <div className="markdown-body max-w-none">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
@@ -100,7 +100,7 @@ export default function ResearchReport({ report = "" }) {
                   {...props}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-400 hover:text-blue-300 underline underline-offset-2"
+                  className="text-[#1F3D2F] hover:text-[#A67C52] underline underline-offset-3 font-medium"
                 />
               ),
             }}
@@ -112,4 +112,3 @@ export default function ResearchReport({ report = "" }) {
     </div>
   );
 }
-

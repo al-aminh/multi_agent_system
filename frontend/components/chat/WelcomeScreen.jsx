@@ -1,161 +1,103 @@
 "use client";
 
 import React from "react";
-import {
-  Search,
-  Globe,
-  PenTool,
-  ShieldCheck,
-  ArrowRight,
-  Sparkles,
-  Bot,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const SUGGESTIONS = [
   {
-    title: "AI in Education",
-    query: "The future of artificial intelligence in education",
-    icon: "🎓",
+    label: "Artificial intelligence in clinical diagnosis & medical imaging",
+    query: "Applications of machine learning and AI in clinical diagnosis and healthcare",
   },
   {
-    title: "Brain-Computer Interfaces",
-    query: "Recent developments in brain-computer interfaces",
-    icon: "🧠",
+    label: "Recent architectural breakthroughs in brain-computer interfaces",
+    query: "Recent developments and clinical trials in brain-computer interfaces",
   },
   {
-    title: "Healthcare ML",
-    query: "Applications of machine learning in healthcare",
-    icon: "⚕️",
+    label: "Commercial timelines and chemistry for solid-state battery technology",
+    query: "Current progress and commercial timeline for solid-state battery technology",
   },
   {
-    title: "Generative AI in Coding",
-    query: "The impact of generative AI on software engineering",
-    icon: "💻",
+    label: "Autonomous coding agents and software verification architectures",
+    query: "The impact of autonomous generative AI agents on software engineering and verification",
   },
 ];
 
-const AGENTS = [
-  {
-    name: "Search Agent",
-    tool: "Tavily Search",
-    desc: "Scours the live web for recent, authoritative sources",
-    icon: Search,
-    color: "from-blue-500/20 to-blue-600/5",
-    border: "border-blue-500/20",
-    iconColor: "text-blue-400",
-  },
-  {
-    name: "Reader Agent",
-    tool: "BeautifulSoup",
-    desc: "Extracts in-depth content from the most relevant pages",
-    icon: Globe,
-    color: "from-cyan-500/20 to-cyan-600/5",
-    border: "border-cyan-500/20",
-    iconColor: "text-cyan-400",
-  },
-  {
-    name: "Writer Chain",
-    tool: "Groq LLM",
-    desc: "Synthesizes data into structured research reports",
-    icon: PenTool,
-    color: "from-violet-500/20 to-violet-600/5",
-    border: "border-violet-500/20",
-    iconColor: "text-violet-400",
-  },
-  {
-    name: "Critic Chain",
-    tool: "AI Reviewer",
-    desc: "Evaluates quality with 10-point scoring and verdicts",
-    icon: ShieldCheck,
-    color: "from-emerald-500/20 to-emerald-600/5",
-    border: "border-emerald-500/20",
-    iconColor: "text-emerald-400",
-  },
+const STEPS = [
+  { title: "Search", desc: "Tavily retrieval" },
+  { title: "Read", desc: "Verbatim parsing" },
+  { title: "Synthesize", desc: "Structured report" },
+  { title: "Review", desc: "Editorial appraisal" },
 ];
 
 export default function WelcomeScreen({ onSelectTopic }) {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 md:py-14 flex flex-col items-center text-center">
-      {/* Brand Badge */}
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-mono mb-6">
-        <Sparkles className="w-3.5 h-3.5 text-violet-400" />
-        <span>AUTONOMOUS MULTI-AGENT PIPELINE</span>
-      </div>
-
-      {/* Main Welcoming Heading */}
-      <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
-        Where should we start your research?
+    <div className="w-full max-w-[720px] mx-auto px-4 sm:px-6 py-12 md:py-20 flex flex-col items-center text-center">
+      {/* Editorial Heading with one word in italic */}
+      <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-light tracking-tight text-[#1F3D2F] dark:text-[#EDE6D8] leading-tight max-w-xl">
+        What subject shall we <em>examine</em> today?
       </h1>
 
-      {/* Subtitle */}
-      <p className="text-base md:text-lg text-[#9A9CA5] max-w-xl mx-auto mb-10 leading-relaxed">
-        Explore complex topics, uncover reliable sources, and generate detailed research reports with coordinated AI agents.
+      {/* Signature detail: Thin brass underline beneath heading */}
+      <div className="w-12 h-[1px] bg-[#A67C52] dark:bg-[#B8975A] mt-5 mb-6 opacity-75" />
+
+      {/* Quiet editorial subtitle */}
+      <p className="text-sm sm:text-[15px] font-serif italic text-[#7A7566] dark:text-[#8F8778] max-w-md mx-auto mb-12 leading-relaxed">
+        Select a proposition or enter an original inquiry to begin primary retrieval, deep document reading, and peer editorial review.
       </p>
 
-      {/* Suggested Topics Grid */}
-      <div className="w-full mb-12">
-        <div className="text-xs uppercase tracking-wider text-[#646775] font-semibold mb-3 text-left">
-          Suggested Topics
+      {/* Suggested Inquiries: Typographic list with hairline dividers, no numbers, no card boxes */}
+      <div className="w-full mb-16 text-left">
+        <div className="text-xs font-serif italic text-[#7A7566] dark:text-[#8F8778] mb-3">
+          Suggested inquiries
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="border-t border-[#D9D2C0] dark:border-[#2C2720]">
           {SUGGESTIONS.map((item, idx) => (
-            <button
+            <div
               key={idx}
               onClick={() => onSelectTopic(item.query)}
-              className="flex items-center justify-between p-3.5 rounded-xl bg-[#111318] hover:bg-[#171922] border border-[rgba(255,255,255,0.07)] hover:border-violet-500/30 text-left transition-all duration-200 group active:scale-[0.99]"
+              className="group py-3.5 border-b border-[#D9D2C0] dark:border-[#2C2720] flex items-center justify-between cursor-pointer transition-colors duration-200"
             >
-              <div className="flex items-center gap-3">
-                <span className="text-lg">{item.icon}</span>
-                <span className="text-xs sm:text-sm text-[#D1D5DB] group-hover:text-white font-medium">
-                  {item.query}
-                </span>
-              </div>
-              <ArrowRight className="w-4 h-4 text-[#646775] group-hover:text-violet-400 transform group-hover:translate-x-0.5 transition-all flex-shrink-0 ml-2" />
-            </button>
+              <span className="font-serif text-sm sm:text-[15px] text-[#1B1F1C] dark:text-[#EDE6D8] group-hover:text-[#1F3D2F] dark:group-hover:text-[#B8975A] transition-colors pr-4">
+                {item.label}
+              </span>
+              <ArrowRight
+                className="w-3.5 h-3.5 opacity-0 -translate-x-1.5 group-hover:opacity-100 group-hover:translate-x-0 text-[#1F3D2F] dark:text-[#B8975A] transition-all duration-200 flex-shrink-0"
+                strokeWidth={1.25}
+              />
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Agent Workflow Preview */}
-      <div className="w-full text-left pt-6 border-t border-[rgba(255,255,255,0.06)]">
-        <div className="flex items-center gap-2 mb-4">
-          <Bot className="w-4 h-4 text-violet-400" />
-          <h2 className="text-xs uppercase tracking-wider text-[#646775] font-semibold font-mono">
-            How the Agents Work
-          </h2>
+      {/* Pipeline methodology: Single horizontal line of 4 steps joined by a thin line, no icon boxes */}
+      <div className="w-full text-left pt-6">
+        <div className="text-xs font-serif italic text-[#7A7566] dark:text-[#8F8778] mb-6">
+          Research methodology
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {AGENTS.map((agent, i) => {
-            const Icon = agent.icon;
-            return (
+        <div className="relative w-full">
+          {/* Thin continuous horizontal line */}
+          <div className="absolute top-[5px] left-3 right-3 h-[1px] bg-[#D9D2C0] dark:bg-[#2C2720]" />
+
+          {/* 4 Steps */}
+          <div className="relative flex items-start justify-between">
+            {STEPS.map((step, i) => (
               <div
                 key={i}
-                className={`p-3.5 rounded-xl bg-[#0F1117] border ${agent.border} relative overflow-hidden`}
+                className="flex flex-col items-center text-center bg-[#F3EFE6] dark:bg-[#14120F] px-2 z-10"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <div className={`p-1.5 rounded-lg bg-white/5 ${agent.iconColor}`}>
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <span className="text-[10px] font-mono text-[#646775]">
-                    0{i + 1}
-                  </span>
-                </div>
-                <h3 className="text-xs font-semibold text-white mb-0.5">
-                  {agent.name}
-                </h3>
-                <div className="text-[10px] text-violet-300 font-mono mb-1.5">
-                  {agent.tool}
-                </div>
-                <p className="text-[11px] text-[#8E909B] leading-relaxed">
-                  {agent.desc}
-                </p>
+                <div className="w-2.5 h-2.5 rounded-full bg-[#1F3D2F] dark:bg-[#B8975A] mb-2.5 ring-4 ring-[#F3EFE6] dark:ring-[#14120F]" />
+                <span className="font-serif text-xs font-medium text-[#1B1F1C] dark:text-[#EDE6D8]">
+                  {step.title}
+                </span>
+                <span className="text-[11px] text-[#7A7566] dark:text-[#8F8778] mt-0.5">
+                  {step.desc}
+                </span>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
