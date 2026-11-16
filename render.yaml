@@ -1,0 +1,42 @@
+services:
+  # ========================================================
+  # 1. FastAPI Backend + AI Agents Service
+  # ========================================================
+  - type: web
+    name: research-ai-backend
+    env: python
+    region: oregon
+    plan: free
+    rootDir: .
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: GROQ_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        value: sqlite:///research.db
+
+  # ========================================================
+  # 2. Next.js Frontend Service
+  # ========================================================
+  - type: web
+    name: research-ai-frontend
+    env: node
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 20.18.0
+      - key: NEXT_PUBLIC_API_BASE_URL
+        fromService:
+          type: web
+          name: research-ai-backend
+          property: host

@@ -61,7 +61,7 @@ with client.stream(
             status = event.get("status")
             msg = event.get("message")
             stages_seen.append((stage, status))
-            print(f"   [SSE Event] Stage: {stage:<10} | Status: {status:<10} | Message: {msg[:60]}...")
+            print(f"   [SSE Event] Stage: {stage:<10} | Status: {status:<10} | Message: {msg[:60]}...", flush=True)
             
             if stage == "init" and event.get("data"):
                 conv_id = event["data"].get("conversation_id")
@@ -70,9 +70,9 @@ with client.stream(
                 final_data = event["data"]
             
             if stage == "error":
-                print("   [ERROR Event received]:", event)
+                print("   [ERROR Event received]:", event, flush=True)
         except Exception as e:
-            print("   Parse error:", e, line)
+            print("   Parse error:", e, line, flush=True)
 
 print(f"\n   Total events received. Stages traversed: {[s[0] for s in stages_seen]}")
 assert "search" in [s[0] for s in stages_seen], "Search stage missing"

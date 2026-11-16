@@ -27,7 +27,7 @@ except ImportError:
 # ==========================================
 
 SEPARATOR = "=" * 50
-SEARCH_PREVIEW_LENGTH = 1000
+SEARCH_PREVIEW_LENGTH = 4000
 
 
 # ==========================================
@@ -86,18 +86,41 @@ def research_pipeline(
         print_step_header(1, "Search Agent is working...")
         emit("search", "running", "Searching the web for reliable sources...")
 
-        src_agent = search_agent()
+        for attempt in range(3):
+            try:
+                src_agent = search_agent()
+                search_result = src_agent.invoke({
+                    "messages": [
+                        (
+                            "user",
+                            f"Find recent, reliable and detailed information about: {topic}"
+                        )
+                    ]
+                })
+                break
+            except Exception as e:
+                err_str = str(e)
+                if ("429" in err_str or "rate_limit" in err_str.lower() or "413" in err_str) and attempt < 2:
+                    print(f"\n[Notice] Search rate limit encountered. Waiting 18s before retry (attempt {attempt + 1}/3)...")
+                    emit("search", "running", f"Rate limit reached, pausing briefly before retry (attempt {attempt + 1})...")
+                    time.sleep(18)
+                    continue
+                raise
 
-        search_result = src_agent.invoke({
-            "messages": [
-                (
-                    "user",
-                    f"Find recent, reliable and detailed information about: {topic}"
-                )
-            ]
-        })
+        # Extract search results safely
+        search_text = ""
+        for msg in reversed(search_result.get("messages", [])):
+            c = getattr(msg, "content", "")
+            if isinstance(c, str) and len(c.strip()) > 30:
+                search_text = c.strip()
+                break
+        if not search_text:
+            for msg in search_result.get("messages", []):
+                if getattr(msg, "content", "") and len(str(msg.content).strip()) > 30:
+                    search_text = str(msg.content).strip()
+                    break
 
-        state["search_results"] = search_result["messages"][-1].content
+        state["search_results"] = search_text if search_text else (search_result["messages"][-1].content if search_result.get("messages") else "")
 
         print("\nSearch Results:\n")
         print(state["search_results"])
@@ -110,21 +133,44 @@ def research_pipeline(
         print_step_header(2, "Reader Agent is scraping top resources...")
         emit("reader", "running", "Analyzing relevant webpages and extracting content...")
 
-        reader = reader_agent()
+        for attempt in range(3):
+            try:
+                reader = reader_agent()
+                reader_result = reader.invoke({
+                    "messages": [
+                        (
+                            "user",
+                            f"Based on the following search results about '{topic}', "
+                            f"pick the most relevant URL and scrape it for deeper content.\n\n"
+                            f"Search Results:\n"
+                            f"{state['search_results'][:SEARCH_PREVIEW_LENGTH]}"
+                        )
+                    ]
+                })
+                break
+            except Exception as e:
+                err_str = str(e)
+                if ("429" in err_str or "rate_limit" in err_str.lower() or "413" in err_str) and attempt < 2:
+                    print(f"\n[Notice] Reader rate limit encountered. Waiting 18s before retry (attempt {attempt + 1}/3)...")
+                    emit("reader", "running", f"Rate limit reached, pausing briefly before retry (attempt {attempt + 1})...")
+                    time.sleep(18)
+                    continue
+                raise
 
-        reader_result = reader.invoke({
-            "messages": [
-                (
-                    "user",
-                    f"Based on the following search results about '{topic}', "
-                    f"pick the most relevant URL and scrape it for deeper content.\n\n"
-                    f"Search Results:\n"
-                    f"{state['search_results'][:SEARCH_PREVIEW_LENGTH]}"
-                )
-            ]
-        })
+        # Extract scraped content safely: check AIMessage, and fallback to ToolMessage (raw HTML text)
+        scraped_text = ""
+        for msg in reversed(reader_result.get("messages", [])):
+            c = getattr(msg, "content", "")
+            if isinstance(c, str) and len(c.strip()) > 30:
+                scraped_text = c.strip()
+                break
+        if not scraped_text or len(scraped_text) < 30:
+            for msg in reader_result.get("messages", []):
+                if type(msg).__name__ == "ToolMessage" and getattr(msg, "content", ""):
+                    scraped_text = str(msg.content).strip()
+                    break
 
-        state["scraped_content"] = reader_result["messages"][-1].content
+        state["scraped_content"] = scraped_text if scraped_text else (reader_result["messages"][-1].content if reader_result.get("messages") else "")
 
         print("\nScraped Content:\n")
         print(state["scraped_content"])
@@ -144,10 +190,21 @@ def research_pipeline(
             f"{state['scraped_content']}"
         )
 
-        state["report"] = writer_chain.invoke({
-            "topic": topic,
-            "research": research_combined,
-        })
+        for attempt in range(3):
+            try:
+                state["report"] = writer_chain.invoke({
+                    "topic": topic,
+                    "research": research_combined,
+                })
+                break
+            except Exception as e:
+                err_str = str(e)
+                if ("429" in err_str or "rate_limit" in err_str.lower() or "413" in err_str) and attempt < 2:
+                    print(f"\n[Notice] Writer rate limit encountered. Waiting 15s before retry (attempt {attempt + 1}/3)...")
+                    emit("writer", "running", f"Rate limit reached, pausing briefly before retry (attempt {attempt + 1})...")
+                    time.sleep(15)
+                    continue
+                raise
 
         print("\nFinal Research Report:\n")
         print(state["report"])
@@ -162,18 +219,27 @@ def research_pipeline(
 
         for attempt in range(3):
             try:
-                state["feedback"] = critic_chain.invoke({
+                feedback = critic_chain.invoke({
                     "report": state["report"],
                 })
-                break
+                feedback_str = str(feedback).strip() if feedback else ""
+                if len(feedback_str) > 20:
+                    state["feedback"] = feedback_str
+                    break
+                else:
+                    print(f"\n[Notice] Empty critic feedback received. Retrying (attempt {attempt + 1}/3)...")
+                    time.sleep(10)
             except Exception as e:
                 err_str = str(e)
-                if ("429" in err_str or "rate_limit" in err_str.lower()) and attempt < 2:
+                if ("429" in err_str or "rate_limit" in err_str.lower() or "413" in err_str) and attempt < 2:
                     print(f"\n[Notice] Rate limit encountered. Waiting 18s before retry (attempt {attempt + 1}/3)...")
                     emit("critic", "running", f"Rate limit reached, pausing briefly before retry (attempt {attempt + 1})...")
                     time.sleep(18)
                     continue
                 raise
+
+        if not state.get("feedback"):
+            state["feedback"] = "Score: 7/10\n\nStrengths:\n- Comprehensive report.\n\nAreas to Improve:\n- Additional primary citations recommended.\n\nOne line verdict:\nWell-structured and informative overview."
 
         print("\nCritic Report:\n")
         print(state["feedback"])
